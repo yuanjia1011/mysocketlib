@@ -1,11 +1,17 @@
 #pragma once
 #include <list>
 #include <process.h>
+#include "IOCP.h"
 enum eOVERLAPPED_OPCODES
 {
 	OPCODE_STOP,
 	OPCODE_READ,
 	OPCODE_WRITE,	
+};
+enum eSOCKET_TYPE
+{
+	SOCKET_CLIENT,
+	SOCKET_SERVER,
 };
 enum eSOCKET_STATUS
 {
@@ -19,6 +25,7 @@ enum eSOCKET_STATUS
 	SOCKET_STATUS_CLOSE,
 	SOCKET_MAX
 };
+
 typedef struct _OVERLAPPEDPLUS
 {
 	OVERLAPPED	ol;
@@ -31,7 +38,6 @@ typedef struct _OVERLAPPEDPLUS
 	char		pBuf[4096];
 }OVERLAPPEDPLUS, *POVERLAPPEDPLUS;
 
-class IOCP;
 class ISocket
 {
 	friend	class ISocketClient;
@@ -42,16 +48,12 @@ public:
 	~ISocket(void);
 	SOCKET			GetSocket(){ return m_Socket;};
 
+			INT		Send(const CHAR * ptszMsg,size_t size );
+			INT		Recv(size_t size );
 
-			int		GetErrorCode();
+			INT		GetErrorCode();
 			void	Close();
-			// 取得当前状态 [7/8/2012 Peter]
-	
 	eSOCKET_STATUS	GetStatus(){ return m_eStatus;};
-
-			VOID	SyncSend(const CHAR * ptszMsg,size_t size);
-			VOID	SyncRecv(size_t size);
-
 
 protected:
 
@@ -60,21 +62,18 @@ protected:
 	virtual void	OnSend(const TCHAR *pszBuff,size_t size) {};
 	virtual void	OnRecv(const TCHAR *pszBuff,size_t size) {};
 	virtual void	OnStatusChanged(eSOCKET_STATUS eStatus) {};
-private:
-			VOID	BindIOCP(IOCP * pIocp);
-			IOCP*	GetIOCP();
-			BOOL	RegToIOCP();
+
+private:	
 			void	InitSocket();
 	eSOCKET_STATUS	SetStatus(eSOCKET_STATUS eStatus);		
-	static unsigned int	WINAPI WorkerThread(LPVOID CompletionPortID);
 private:
 	static	int		m_nSocketNums;
-	static	IOCP	*m_pIocpPtr;
 	eSOCKET_STATUS	m_eStatus;
+	eSOCKET_TYPE	m_eSocketType;
+	OVERLAPPEDPLUS	ol;
 protected:
 	char			m_pszServerAddr[256];
 	short			m_sServerPort;
-	OVERLAPPEDPLUS	ol;
 	SOCKET			m_Socket;
 };
 
