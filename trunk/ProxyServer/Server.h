@@ -10,5 +10,6 @@ public:
 	virtual	void	OnAccept(ISocket *pISocketPtr);
 
 	virtual	ISocket*	AllocClientSocket(SOCKET ClientSocket);
+	virtual void		OnClose(ISocket *pISocketPtr) ;
 };
 

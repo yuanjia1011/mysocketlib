@@ -3,6 +3,8 @@ class ISocket;
 
 typedef unsigned int (__stdcall *pWorkThreadFun)(void *) ;
 #define MAX_WORK_THREADS	10
+
+
 class IOCP
 {
 public:
