@@ -6,6 +6,11 @@ CCLient::CCLient(void)
 {
 }
 
+CCLient::CCLient( SOCKET socket ):ISocketClient(socket)
+{
+
+}
+
 
 CCLient::~CCLient(void)
 {

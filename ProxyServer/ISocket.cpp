@@ -43,12 +43,11 @@ ISocket::~ISocket(void)
 		}
 	}
 }
-bool ISocket::BindToIOCP()
+BOOL ISocket::RegToIOCP()
 {
 	if(!m_pIocpPtr)
 		return false;
-	m_pIocpPtr->Bind((HANDLE)GetSocket(),(ULONG_PTR)this);
-	return true;
+	return m_pIocpPtr->BindIoCompletionPort((HANDLE)GetSocket(),(ULONG_PTR)this);
 }
 VOID ISocket::SyncSend(const CHAR * ptszMsg,size_t size )
 {
@@ -74,6 +73,7 @@ VOID ISocket::SyncSend(const CHAR * ptszMsg,size_t size )
 
 VOID ISocket::SyncRecv( size_t size )
 {
+	ZeroMemory(&ol,sizeof(ol));
 	ol.plPoint = this;
 	ol.wsaBuf.buf = ol.pBuf;
 	ol.wsaBuf.len = size;
@@ -94,6 +94,7 @@ VOID ISocket::SyncRecv( size_t size )
 
 void ISocket::Close()
 {
+	SetStatus(SOCKET_STATUS_CLOSE);
 	closesocket(m_Socket);
 	m_Socket = INVALID_SOCKET;
 	InitSocket();
@@ -144,12 +145,13 @@ unsigned int WINAPI ISocket::WorkerThread( LPVOID CompletionPortID )
 				_endthreadex(0);
 				return 0;
 			}
-
 			nErrorCode = WSAGetLastError();
 			if( 0 != nErrorCode)
 				pISocket->onError(nErrorCode);
 			else
-				pISocket->OnClose();
+			{
+				pISocket->Close();
+			}
 			continue;
 		}
 
@@ -169,4 +171,22 @@ unsigned int WINAPI ISocket::WorkerThread( LPVOID CompletionPortID )
 	}
 	_endthreadex(0);
 	return TRUE;
+}
+
+VOID ISocket::BindIOCP( IOCP * pIocp )
+{
+	m_pIocpPtr = pIocp;
+}
+
+IOCP	* ISocket::GetIOCP()
+{
+	return m_pIocpPtr;
+}
+
+eSOCKET_STATUS ISocket::SetStatus( eSOCKET_STATUS eStatus )
+{
+	eSOCKET_STATUS eOldStatus = m_eStatus ;
+	m_eStatus = eStatus;
+	OnStatusChanged(eStatus);
+	return eOldStatus;
 }

@@ -3,6 +3,7 @@
 class CCLient:public ISocketClient
 {
 public:
+	CCLient(SOCKET socket);
 	CCLient(void);
 	virtual ~CCLient(void);
 

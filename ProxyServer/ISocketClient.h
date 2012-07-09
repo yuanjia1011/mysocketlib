@@ -1,13 +1,7 @@
 #pragma once
 #include "ISocket.h"
 #include "Mutex.h"
-enum eSocketStatus
-{
-	SOCKET_INVALID,
-	SOCKET_STATUS_CONNECTING,
-	SOCKET_STATUS_CONNEECTED,
-	SOCKET_MAX
-};
+
 class ISocketClient;
 class IOCP;
 typedef std::list<ISocketClient*>			ClientList;
@@ -41,7 +35,6 @@ private:
 
 protected:
 	static	HANDLE				m_hMonitConnectThread;
-	eSocketStatus				m_eStatus;
 	
 private:
 	static	DWORD	m_dwClientNums;
