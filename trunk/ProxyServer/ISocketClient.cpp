@@ -87,7 +87,8 @@ DWORD WINAPI ISocketClient::MonitConnectClient( LPVOID pParam )
 				nErrorCode = pClientSocketPtr->GetErrorCode();
 				if(nErrorCode == 0) 
 				{
-					pClientSocketPtr->BindToIOCP();
+					pClientSocketPtr->SetStatus(SOCKET_STATUS_CONNEECTED);
+					pClientSocketPtr->RegToIOCP();
 					pClientSocketPtr->OnConnect(Socket);
 					
 				}else

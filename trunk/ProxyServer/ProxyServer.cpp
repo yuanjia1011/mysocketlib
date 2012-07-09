@@ -13,7 +13,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	CCLient client;
 	CServer server;
 	//client.SyncConnect("127.0.0.1",1001);
-	server.StartListen(99);
+	server.StartListen(1001);
 	getchar();
 	return 0;
 }

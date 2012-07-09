@@ -26,9 +26,11 @@ void IOCP::Init(int nThreadNums )
 	ZeroMemory(m_hThreadHandles,sizeof(m_hThreadHandles));
 }
 
-VOID IOCP::Bind( HANDLE hFileHandle,ULONG_PTR CompletionKey,DWORD NumberOfConcurrentThreads /*= 0 */ )
+BOOL IOCP::BindIoCompletionPort( HANDLE hFileHandle,ULONG_PTR CompletionKey,DWORD NumberOfConcurrentThreads /*= 0 */ )
 {
-	CreateIoCompletionPort(hFileHandle, m_hCompletionPort, CompletionKey, NumberOfConcurrentThreads);
+	if(NULL == CreateIoCompletionPort(hFileHandle, m_hCompletionPort, CompletionKey, NumberOfConcurrentThreads))
+		return FALSE;
+	return true;
 }
 
 VOID IOCP::StartWork(pWorkThreadFun pWorkFun)

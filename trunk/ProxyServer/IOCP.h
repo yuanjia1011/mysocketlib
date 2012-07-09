@@ -8,8 +8,8 @@ class IOCP
 public:
 	IOCP(void);
 	virtual ~IOCP(void);
-	void	Init(int nThreadNums = 0);
-	VOID	Bind(HANDLE hFileHandle,ULONG_PTR CompletionKey,DWORD NumberOfConcurrentThreads = 0 );
+	VOID	Init(int nThreadNums = 0);
+	BOOL	BindIoCompletionPort(HANDLE hFileHandle,ULONG_PTR CompletionKey,DWORD NumberOfConcurrentThreads = 0 );
 	VOID	StartWork(pWorkThreadFun pWorkFun);
 	VOID	StopWork(LPOVERLAPPED lpOverlapped);
 	

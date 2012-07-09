@@ -8,5 +8,7 @@ public:
 	~CServer(void);
 	virtual	void	OnStartListen();
 	virtual	void	OnAccept(ISocket *pISocketPtr);
+
+	virtual	ISocket*	AllocClientSocket(SOCKET ClientSocket);
 };
 

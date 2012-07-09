@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Server.h"
-
+#include "FormClientSocket.h"
 
 CServer::CServer(void)
 {
@@ -19,5 +19,11 @@ void CServer::OnStartListen()
 void CServer::OnAccept( ISocket *pISocketPtr )
 {
 	theConsole.Trace("CServer","OnAccept");
-	pISocketPtr->SyncRecv(1024);
+	
+}
+
+ISocket* CServer::AllocClientSocket( SOCKET ClientSocket )
+{
+	CFormClientSocket *pClientSocket= new CFormClientSocket(ClientSocket);
+	return pClientSocket;
 }
